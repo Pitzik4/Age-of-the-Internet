@@ -60,5 +60,10 @@ public class Sprite implements Renderable {
 		this.x = x;
 		this.y = y;
 	}
+	public void mergeSprite(Sprite spr) {
+		Graphics2D g = img.createGraphics();
+		g.drawImage(spr.draw(), 0, 0, null);
+		g.dispose();
+	}
 
 }

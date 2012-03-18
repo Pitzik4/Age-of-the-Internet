@@ -43,6 +43,7 @@ public class BrokenConnectionTile extends Tile {
 		if(neighbools[3])
 			position += 8;
 		sprite = new Sprite(POSITIONAL_SPRITES[position]+191, x, y, false);
+		((Sprite) sprite).mergeSprite(new Sprite(207-neededComputers));
 		this.neededComputers = neededComputers;
 	}
 
