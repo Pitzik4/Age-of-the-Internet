@@ -31,7 +31,7 @@ public class ConnectionTile extends Tile {
 		}
 		boolean[] neighbools = new boolean[4];
 		for(int i=0; i<4; i++) {
-			neighbools[i] = CONNECTABLE_TILES.contains(neighbors[i]);
+			neighbools[i] = (CONNECTABLE_TILES.contains(neighbors[i])) || ((neighbors[i] & 0xFFFF) == 0x8040);
 		}
 		int position = 0;
 		if(neighbools[0])

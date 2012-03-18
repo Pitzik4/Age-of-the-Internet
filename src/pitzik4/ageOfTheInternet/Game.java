@@ -47,7 +47,7 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 	public volatile boolean rightButton=false;
 	public int level = 0;
 	public Stage currentLevel;
-	public Stage[] levels = new Stage[10];
+	public Stage[] levels = new Stage[11];
 	public PauseScreen pausescreen;
 	public boolean paused = false;
 	public boolean wasPausing = false;
@@ -75,12 +75,12 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 	}
 	public Stage remakeLevel(int index) {
 		if(index == 0) {
-			//return new StartingCutscene(this);
-			try {
+			return new StartingCutscene(this);
+			/*try {
 				return new Level(7, this);
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 		} else if(index == 1) {
 			return new TitleScreen(this);
 		} else if(index == 2) {
@@ -120,6 +120,12 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 		} else if(index == 9) {
 			try {
 				return new Level(6, this);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if(index == 10) {
+			try {
+				return new Level(7, this);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

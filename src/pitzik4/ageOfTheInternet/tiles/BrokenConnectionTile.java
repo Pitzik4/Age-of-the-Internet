@@ -1,6 +1,5 @@
 package pitzik4.ageOfTheInternet.tiles;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import pitzik4.ageOfTheInternet.graphics.Sprite;
@@ -20,7 +19,7 @@ public class BrokenConnectionTile extends Tile {
 		}
 		boolean[] neighbools = new boolean[4];
 		for(int i=0; i<4; i++) {
-			neighbools[i] = CONNECTABLE_TILES.contains(neighbors[i]);
+			neighbools[i] = (CONNECTABLE_TILES.contains(neighbors[i])) || ((neighbors[i] & 0xFFFF) == 0x8040);
 		}
 		if(neighbools[0])
 			position += 1;

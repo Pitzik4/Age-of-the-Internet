@@ -68,8 +68,8 @@ public abstract class Tile implements Renderable, Tickable {
 		if(id == 0x008000) {
 			return new HackerTile(x, y, owner);
 		}
-		if(id == 0x008040) {
-			return new BrokenConnectionTile(x, y, neighbors, (byte) Math.round((Math.random() * 8) + 1));
+		if((id & 0x00FFFF) == 0x008040) {
+			return new BrokenConnectionTile(x, y, neighbors, (byte) (id >> 16));
 		}
 		return null;
 	}

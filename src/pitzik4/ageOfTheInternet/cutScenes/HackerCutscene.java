@@ -142,6 +142,26 @@ public class HackerCutscene implements Stage {
 			dialogue.go();
 			lifeTime++;
 		} else if(lifeTime == 36) {
+			dialogue = new InfoBox(4, 4, 312, 64, StartingCutscene.drThompsonHead, "We've also created a program that will let you into secured networks.");
+			dialogue.go();
+			lifeTime++;
+		} else if(lifeTime == 38) {
+			dialogue = new InfoBox(4, 4, 312, 64, StartingCutscene.tobyHead, "Really? Awesome!");
+			dialogue.go();
+			lifeTime++;
+		} else if(lifeTime == 40) {
+			dialogue = new InfoBox(4, 4, 312, 64, StartingCutscene.drThompsonHead, "It takes more than one computer to find the key, though.");
+			dialogue.go();
+			lifeTime++;
+		} else if(lifeTime == 42) {
+			dialogue = new InfoBox(4, 4, 312, 64, StartingCutscene.drThompsonHead, "Some networks have harder-to-crack security than others.");
+			dialogue.go();
+			lifeTime++;
+		} else if(lifeTime == 44) {
+			dialogue = new InfoBox(4, 4, 312, 64, StartingCutscene.tobyHead, "Ok, great.");
+			dialogue.go();
+			lifeTime++;
+		} else if(lifeTime == 46) {
 			done = true;
 		}
 		if(owner.keysDown.contains(10)) {
