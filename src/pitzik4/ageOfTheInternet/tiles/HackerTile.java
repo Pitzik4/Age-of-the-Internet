@@ -22,11 +22,14 @@ public class HackerTile extends Tile {
 	public String riCliMenuTitle = "Hacker";
 	private boolean beingUnhacked = false;
 	private int unhackTimer = 0;
+	private boolean hacking = false;
+	private int hackTimer = 0;
 	public boolean initiatedUnhacking = false;
 	public static int slowestUnhack = 80;
 	public static int fastestUnhack = 60;
 	public static int hackersOwned = 0;
 	private static final int[] UNHACK_FLASH_FRAMES = {43, 45};
+	private static final int[] HACK_FLASH_FRAMES = {43, 46};
 	private static final Random rnd = new Random();
 	private static final int INVERSE_HACK_PROBABILITY = 100;
 	
@@ -74,7 +77,7 @@ public class HackerTile extends Tile {
 			}
 		}
 		if(yoursLeft < TRIES_TO_HACK) {
-			if(rnd.nextInt(inverseUnhackProbability()) == 0 && !beingUnhacked) {
+			if(rnd.nextInt(inverseUnhackProbability()) == 0 && !beingUnhacked && !hacking) {
 				beingUnhacked = true;
 				sprite = new Animation(UNHACK_FLASH_FRAMES, 3, x, y, true);
 				((Animation) sprite).go();
@@ -100,11 +103,34 @@ public class HackerTile extends Tile {
 				}
 			}
 		}
-		if(!isOwned() && rnd.nextInt(INVERSE_HACK_PROBABILITY) == 0) {
-			Set<Tile> whatToHack = ((Level) owner.currentLevel).whatCanBeEviledBy(this);
-			List<Tile> whatToHackList = new ArrayList<Tile>(whatToHack);
-			if(whatToHackList.size() > 0) {
-				((Level) owner.currentLevel).evil(whatToHackList.get(rnd.nextInt(whatToHackList.size())));
+		if(!isOwned() && rnd.nextInt(INVERSE_HACK_PROBABILITY) == 0 && !hacking && !beingUnhacked) {
+			hacking = true;
+			sprite = new Animation(HACK_FLASH_FRAMES, 3, x, y, true);
+			((Animation) sprite).go();
+			riCliMenuOptions = new String[2];
+			riCliMenuOptions[0] = (yoursLeft <= 0) ? "Unhack" : "Hack";
+			riCliMenuOptions[1] = "Stop!!";
+			hackTimer = rnd.nextInt(slowestUnhack-fastestUnhack)+fastestUnhack;
+		}
+		if(hacking) {
+			hackTimer--;
+			if(hackTimer <= 0) {
+				Set<Tile> whatToHack = ((Level) owner.currentLevel).whatCanBeEviledBy(this);
+				List<Tile> whatToHackList = new ArrayList<Tile>(whatToHack);
+				if(whatToHackList.size() > 0) {
+					((Level) owner.currentLevel).evil(whatToHackList.get(rnd.nextInt(whatToHackList.size())));
+				}
+				hacking = false;
+				sprite = new Sprite(isOwned() ? 43 : 44, x, y, false);
+			}
+			if(rightClickMenu != null && rightClickMenu.buttons.length >= 2) {
+				if(rightClickMenu.buttons[1].nowClicked) {
+					hacking = false;
+					String old = riCliMenuOptions[0];
+					riCliMenuOptions = new String[] {old};
+					sprite = new Sprite(isOwned() ? 43 : 44, x, y, false);
+					rightClickMenu.exited = true;
+				}
 			}
 		}
 		if(sprite instanceof Animation) {

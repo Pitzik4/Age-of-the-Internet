@@ -75,12 +75,12 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 	}
 	public Stage remakeLevel(int index) {
 		if(index == 0) {
-			return new StartingCutscene(this);
-			/*try {
-				return new Level(7, this);
+			//return new StartingCutscene(this);
+			try {
+				return new Level(6, this);
 			} catch (IOException e) {
 				e.printStackTrace();
-			}*/
+			}
 		} else if(index == 1) {
 			return new TitleScreen(this);
 		} else if(index == 2) {
