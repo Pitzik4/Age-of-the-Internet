@@ -77,7 +77,7 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 		if(index == 0) {
 			//return new StartingCutscene(this);
 			try {
-				return new Level(4, this);
+				return new Level(6, this);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

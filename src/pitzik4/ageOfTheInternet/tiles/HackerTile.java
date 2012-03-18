@@ -155,7 +155,7 @@ public class HackerTile extends Tile {
 	}
 	@Override
 	public void beOwned() {
-		if(!beingUnhacked) {
+		if(!beingUnhacked && !hacking) {
 			sprite = new Sprite(43, x, y, false);
 		}
 	}

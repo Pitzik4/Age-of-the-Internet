@@ -120,7 +120,9 @@ public class CorporationTile extends Tile {
 	}
 	@Override
 	public void beOwned() {
-		sprite = new Sprite(38, x, y, false);
+		if(!beingUnhacked) {
+			sprite = new Sprite(38, x, y, false);
+		}
 	}
 	@Override
 	public void beEvil() {
