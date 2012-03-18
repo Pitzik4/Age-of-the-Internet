@@ -71,7 +71,8 @@ public class CorporationTile extends Tile {
 		}
 		if(yours) {
 			if(rnd.nextInt(100) == 0) {
-				((Level) owner.currentLevel).setMoney(((Level) owner.currentLevel).getMoney()+rnd.nextInt(MAX_GAIN));
+				((Level) owner.currentLevel).setMoney(((Level) owner.currentLevel).getMoney()+rnd.nextInt(MAX_GAIN-1)+1);
+				((Level) owner.currentLevel).emitMoneyParticleFrom(this);
 			}
 			if(rnd.nextInt(inverseUnhackProbability) == 0) {
 				beingUnhacked = true;

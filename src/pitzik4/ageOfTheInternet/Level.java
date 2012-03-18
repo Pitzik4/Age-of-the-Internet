@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import pitzik4.ageOfTheInternet.graphics.ExplosionParticle;
+import pitzik4.ageOfTheInternet.graphics.MoneyParticle;
 import pitzik4.ageOfTheInternet.graphics.RenderableString;
 import pitzik4.ageOfTheInternet.graphics.Sprite;
 import pitzik4.ageOfTheInternet.tiles.BrokenConnectionTile;
@@ -35,7 +36,8 @@ public class Level implements Stage {
 	public Game owner;
 	public Map<Tile, Player> players = new HashMap<Tile, Player>();
 	public Map<Tile, Player> oldPlayers = new HashMap<Tile, Player>();
-	public Set<ExplosionParticle> particles = new HashSet<ExplosionParticle>();
+	public Set<ExplosionParticle> explosionParticles = new HashSet<ExplosionParticle>();
+	public Set<MoneyParticle> moneyParticles = new HashSet<MoneyParticle>();
 	public Map<Player, Tile> goingPlayers = new HashMap<Player, Tile>();
 	public Map<Tile, Hacker> hackers = new HashMap<Tile, Hacker>();
 	public Map<Hacker, Tile> goingHackers = new HashMap<Hacker, Tile>();
@@ -141,8 +143,15 @@ public class Level implements Stage {
 		for(Hacker p : goingHackers.keySet()) {
 			p.tick();
 		}
-		for(Iterator<ExplosionParticle> it = particles.iterator(); it.hasNext();) {
+		for(Iterator<ExplosionParticle> it = explosionParticles.iterator(); it.hasNext();) {
 			ExplosionParticle ep = it.next();
+			ep.tick();
+			if(ep.dead) {
+				it.remove();
+			}
+		}
+		for(Iterator<MoneyParticle> it = moneyParticles.iterator(); it.hasNext();) {
+			MoneyParticle ep = it.next();
 			ep.tick();
 			if(ep.dead) {
 				it.remove();
@@ -256,8 +265,11 @@ public class Level implements Stage {
 		for(Hacker h : goingHackers.keySet()) {
 			h.drawOn(g, scrollx, scrolly);
 		}
-		for(ExplosionParticle ep : particles) {
+		for(ExplosionParticle ep : explosionParticles) {
 			ep.drawOn(g, scrollx, scrolly);
+		}
+		for(MoneyParticle mp : moneyParticles) {
+			mp.drawOn(g, scrollx, scrolly);
 		}
 		ramRender.drawOn(g, 0, 0);
 		moneyRender.drawOn(g, 0, 0);
@@ -531,7 +543,7 @@ public class Level implements Stage {
     	if(player != null) {
     		boolean was = isOwned(tile);
 	    	for(int i=0; i<6; i++) {
-	    		particles.add(new ExplosionParticle(player.getX()+Sprite.SPRITE_WIDTH/2, player.getY()+Sprite.SPRITE_HEIGHT/2, rnd.nextDouble()*Math.PI*2));
+	    		explosionParticles.add(new ExplosionParticle(player.getX()+Sprite.SPRITE_WIDTH/2, player.getY()+Sprite.SPRITE_HEIGHT/2, rnd.nextDouble()*Math.PI*2));
 	   		}
 	   		removePlayer(tile);
 	   		goingPlayers.remove(player);
@@ -546,7 +558,7 @@ public class Level implements Stage {
     	Hacker player = hackers.get(tile);
     	if(player != null) {
 	    	for(int i=0; i<6; i++) {
-	    		particles.add(new ExplosionParticle(player.getX()+Sprite.SPRITE_WIDTH/2, player.getY()+Sprite.SPRITE_HEIGHT/2, rnd.nextDouble()*Math.PI*2));
+	    		explosionParticles.add(new ExplosionParticle(player.getX()+Sprite.SPRITE_WIDTH/2, player.getY()+Sprite.SPRITE_HEIGHT/2, rnd.nextDouble()*Math.PI*2));
 	   		}
 	   		removeHacker(tile);
 	   		goingHackers.remove(player);
@@ -697,6 +709,9 @@ public class Level implements Stage {
 				}
 			}
 		}
+	}
+	public void emitMoneyParticleFrom(Tile t) {
+		moneyParticles.add(new MoneyParticle(t.getX(), t.getY()-Sprite.SPRITE_HEIGHT));
 	}
 
 }
