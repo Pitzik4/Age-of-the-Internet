@@ -11,6 +11,40 @@ public abstract class Tile implements Renderable, Tickable {
 	public Renderable sprite;
 	public int x, y;
 	
+	public static Tile getNewTile(int id, int x, int y, Tile[] neighbors, Game owner) {
+		int[] ints = new int[neighbors.length];
+		for(int i = 0; i < neighbors.length; i++) {
+			ints[i] = intFromTile(neighbors[i]);
+		}
+		return getNewTile(id, x, y, ints, owner);
+	}
+	public static int intFromTile(Tile t) {
+		if(t instanceof ComputerTile) {
+			return 0x0000FF;
+		}
+		if(t instanceof HomeTile) {
+			return 0x00FFFF;
+		}
+		if(t instanceof ConnectionTile) {
+			return 0x00FF00;
+		}
+		if(t instanceof EndTile) {
+			return 0xFFFF00;
+		}
+		if(t instanceof CorporationTile) {
+			return 0xFF00FF;
+		}
+		if(t instanceof ChurchTile) {
+			return 0x808080;
+		}
+		if(t instanceof HackerTile) {
+			return 0x008000;
+		}
+		if(t instanceof BrokenConnectionTile) {
+			return 0x008040;
+		}
+		return 0;
+	}
 	public static Tile getNewTile(int id, int x, int y, int[] neighbors, Game owner) {
 		id = id&0xFFFFFF;
 		if(id == 0x0000FF) {
@@ -33,6 +67,9 @@ public abstract class Tile implements Renderable, Tickable {
 		}
 		if(id == 0x008000) {
 			return new HackerTile(x, y, owner);
+		}
+		if(id == 0x008040) {
+			return new BrokenConnectionTile(x, y, neighbors, (byte) Math.round((Math.random() * 8) + 1));
 		}
 		return null;
 	}

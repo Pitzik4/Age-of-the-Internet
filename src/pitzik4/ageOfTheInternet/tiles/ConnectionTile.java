@@ -9,7 +9,7 @@ public class ConnectionTile extends Tile {
 	public static final Set<Integer> CONNECTABLE_TILES = connectableTiles();
 	public static final int[] POSITIONAL_SPRITES = {13, 2, 1, 3, 2, 2, 4, 17, 1, 6, 1, 18, 5, 19, 20, 21};
 	
-	private static Set<Integer> connectableTiles() {
+	public static Set<Integer> connectableTiles() {
 		Set<Integer> out = new HashSet<Integer>();
 		out.add(0x0000FF);
 		out.add(0x00FFFF);
@@ -18,6 +18,7 @@ public class ConnectionTile extends Tile {
 		out.add(0xFF00FF);
 		out.add(0x808080);
 		out.add(0x008000);
+		out.add(0x008040);
 		out.add(1);
 		return out;
 	}

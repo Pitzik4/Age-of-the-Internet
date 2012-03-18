@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import pitzik4.ageOfTheInternet.graphics.ExplosionParticle;
 import pitzik4.ageOfTheInternet.graphics.RenderableString;
 import pitzik4.ageOfTheInternet.graphics.Sprite;
+import pitzik4.ageOfTheInternet.tiles.BrokenConnectionTile;
 import pitzik4.ageOfTheInternet.tiles.ConnectionTile;
 import pitzik4.ageOfTheInternet.tiles.HackerTile;
 import pitzik4.ageOfTheInternet.tiles.HomeTile;
@@ -49,10 +50,11 @@ public class Level implements Stage {
 	private int money = 0;
 	private RenderableString moneyRender;
 	private int ramCost = 5;
+	private Set<Tile> ownedComputers = new HashSet<Tile>();
 	private static final int RAM_UPGRADE_AMT = 10;
 	private static final Random rnd = new Random();
-	public static final int[] levelRAMs = {20, 30, 0, 15, 10, 25};
-	public static final int[] levelMoneys = {0, 0, 26, 0, 0, 0};
+	public static final int[] levelRAMs = {20, 30, 0, 15, 10, 25, 95};
+	public static final int[] levelMoneys = {0, 0, 26, 0, 0, 0, 95};
 	
 	public Level(BufferedImage img, Game owner, int x, int y, int ram, int money) {
 		this(img, owner, ram, money);
@@ -103,6 +105,9 @@ public class Level implements Stage {
 					addPlayer(tiles[i][j], new Player(tiles[i][j].getX(), tiles[i][j].getY(), path));
 				}
 			}
+		}
+		for(Tile t : players.keySet()) {
+			addOwnedComputer(t);
 		}
 	}
 	public Level(String name, Game owner, int ram, int money) throws IOException {
@@ -316,7 +321,13 @@ public class Level implements Stage {
 	}
 	public boolean isOwned(Tile tile) {
 		if(tile instanceof HackerTile) {
+			if(((HackerTile) tile).isOwned() && !ownedComputers.contains(tile)) {
+				addOwnedComputer(tile);
+			}
 			return ((HackerTile) tile).isOwned();
+		}
+		if(players.containsKey(tile) && !ownedComputers.contains(tile)) {
+			addOwnedComputer(tile);
 		}
 		return players.containsKey(tile);
 	}
@@ -350,6 +361,11 @@ public class Level implements Stage {
 		Tile[] out = neighbors(t);
 		for(int i=0; i<out.length; i++) {
 			if(!(out[i] instanceof ConnectionTile) && !(out[i] == couldBe)) {
+				if(out[i] instanceof BrokenConnectionTile) {
+					if(((BrokenConnectionTile) out[i]).usable()) {
+						continue;
+					}
+				}
 				out[i] = null;
 			}
 		}
@@ -485,6 +501,7 @@ public class Level implements Stage {
     	player.go();
     	goingPlayers.put(player, tile);
     	setRAM(ram - tile.hackCost());
+    	addOwnedComputer(tile);
     }
     public void evil(Tile tile) {
     	if(isEvil(tile))
@@ -522,6 +539,8 @@ public class Level implements Stage {
 	   			setRAM(ram + tile.hackCost());
 	   		}
     	}
+    	removeOwnedComputer(tile);
+    	ensureConnected();
     }
     public void deevil(Tile tile) {
     	Hacker player = hackers.get(tile);
@@ -658,6 +677,26 @@ public class Level implements Stage {
 			return false;
 		}
 		return t.isEvil();
+	}
+	public void addOwnedComputer(Tile tile) {
+		ownedComputers.add(tile);
+		for(Tile[] tt : tiles) {
+			for(Tile t : tt) {
+				if(t instanceof BrokenConnectionTile) {
+					((BrokenConnectionTile) t).notifyOwnedChange(ownedComputers.size());
+				}
+			}
+		}
+	}
+	public void removeOwnedComputer(Tile tile) {
+		ownedComputers.remove(tile);
+		for(Tile[] tt : tiles) {
+			for(Tile t : tt) {
+				if(t instanceof BrokenConnectionTile) {
+					((BrokenConnectionTile) t).notifyOwnedChange(ownedComputers.size());
+				}
+			}
+		}
 	}
 
 }
