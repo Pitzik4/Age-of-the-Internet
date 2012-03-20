@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.swing.JFrame;
 
+import pitzik4.ageOfTheInternet.cutScenes.EndingCutscene;
 import pitzik4.ageOfTheInternet.cutScenes.HackerCutscene;
 import pitzik4.ageOfTheInternet.cutScenes.MoneyCutscene;
 import pitzik4.ageOfTheInternet.cutScenes.StartingCutscene;
@@ -47,7 +48,7 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 	public volatile boolean rightButton=false;
 	public int level = 0;
 	public Stage currentLevel;
-	public Stage[] levels = new Stage[11];
+	public Stage[] levels = new Stage[12];
 	public PauseScreen pausescreen;
 	public boolean paused = false;
 	public boolean wasPausing = false;
@@ -75,12 +76,12 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 	}
 	public Stage remakeLevel(int index) {
 		if(index == 0) {
-			//return new StartingCutscene(this);
-			try {
-				return new Level(6, this);
+			return new StartingCutscene(this);
+			/*try {
+				return new Level(7, this);
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 		} else if(index == 1) {
 			return new TitleScreen(this);
 		} else if(index == 2) {
@@ -129,6 +130,8 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else if(index == 11) {
+			return new EndingCutscene(this);
 		}
 		return null;
 	}
