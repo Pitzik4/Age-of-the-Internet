@@ -4,12 +4,14 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import pitzik4.ageOfTheInternet.Game;
 import pitzik4.ageOfTheInternet.Stage;
 import pitzik4.ageOfTheInternet.Tickable;
 import pitzik4.ageOfTheInternet.graphics.Animation;
+import pitzik4.ageOfTheInternet.graphics.ConfettiParticle;
 import pitzik4.ageOfTheInternet.graphics.InfoBox;
 import pitzik4.ageOfTheInternet.graphics.Renderable;
 import pitzik4.ageOfTheInternet.graphics.Screen;
@@ -38,6 +40,8 @@ public class EndingCutscene implements Stage {
 	private Set<Integer> lastKeysPressed = new HashSet<Integer>();
 	private Animation screen = createScreen();
 	private Animation screen2 = createScreen2();
+	private Set<ConfettiParticle> confetti = new HashSet<ConfettiParticle>();
+	private static final Random rnd = new Random();
 	public static final Renderable drThompsonHead = new Sprite(32, 0, 0, Screen.spritesheet, 32, 32);
 	public static final Renderable drThompsonOhNoHead = new Sprite(33, 0, 0, Screen.spritesheet, 32, 32);
 	public static final Renderable tobyHead = new Sprite(34, 0, 0, Screen.spritesheet, 32, 32);
@@ -70,6 +74,9 @@ public class EndingCutscene implements Stage {
 		this.owner = owner;
 		tobyWalk.go();
 		drThompsonWalk.go();
+		/*for(int i = 0; i < 100; i++) {
+			confetti.add(new ConfettiParticle((int) (Math.round(Math.random() * 260) + 32), 77));
+		}*/
 	}
 
 	@Override
@@ -98,6 +105,9 @@ public class EndingCutscene implements Stage {
 		dedigitizer.drawOn(g, 0, 0);
 		if(tobyBeforeDe) {
 			toby.drawOn(g, 0, 0);
+		}
+		for(ConfettiParticle cp : confetti) {
+			cp.drawOn(g, scrollx, scrolly);
 		}
 	}
 
@@ -137,6 +147,11 @@ public class EndingCutscene implements Stage {
 		}
 		if(dialogue != null) {
 			dialogue.tick();
+		}
+		for(ConfettiParticle cp : confetti) {
+			if(cp.getY() < 227) {
+				cp.tick();
+			}
 		}
 		dedigitizer.tick();
 		screen.tick();
@@ -229,10 +244,21 @@ public class EndingCutscene implements Stage {
 			dialogue.go();
 			lifeTime++;
 		} else if(lifeTime == 208) {
+			drThompson = new Sprite(130, drThompson.getX(), drThompson.getY(), bigSpriteSheet, 16, 16);
+			drGreen = new Sprite(130, drGreen.getX(), drGreen.getY(), bigSpriteSheet, 16, 16);
+			for(int i = 0; i < 15; i++) {
+				confetti.add(new ConfettiParticle(drThompson.getX() + rnd.nextInt(Sprite.SPRITE_WIDTH), drThompson.getY() + rnd.nextInt(Sprite.SPRITE_HEIGHT)));
+			}
+			for(int i = 0; i < 15; i++) {
+				confetti.add(new ConfettiParticle(drGreen.getX() + rnd.nextInt(Sprite.SPRITE_WIDTH), drGreen.getY() + rnd.nextInt(Sprite.SPRITE_HEIGHT)));
+			}
+		} else if(lifeTime == 210) {
+			drThompson.goTo(-16, 0);
+			drGreen.goTo(-16, 0);
 			dialogue = new InfoBox(4, 4, 312, 64, tobyHead, "I win!!!!!!!");
 			dialogue.go();
 			lifeTime++;
-		} else if(lifeTime > 210) {
+		} else if(lifeTime > 212) {
 			done = true;
 		}
 		if(keysPressed.contains(32) && !lastKeysPressed.contains(32)) {
