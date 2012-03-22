@@ -44,8 +44,10 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 	public List<Tickable> tickables = new ArrayList<Tickable>();
 	public Set<Integer> keysDown = new HashSet<Integer>();
 	public volatile int mouseX=0, mouseY=0;
-	public volatile boolean mouseDown=false;
-	public volatile boolean rightButton=false;
+	public volatile boolean mouseDown = false;
+	private volatile boolean mouseActuallyDown = false;
+	private volatile boolean mouseReleasedTooSoon = false;
+	public volatile boolean rightButton = false;
 	public int level = 0;
 	public Stage currentLevel;
 	public Stage[] levels = new Stage[12];
@@ -212,6 +214,10 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 		if(!(keysDown.contains(27) || keysDown.contains(80))) {
 			wasPausing = false;
 		}
+		if(mouseReleasedTooSoon) {
+			mouseReleasedTooSoon = false;
+			mouseDown = mouseActuallyDown;
+		}
 	}
 	public void addTickable(Tickable t) {
 		tickables.add(t);
@@ -336,11 +342,16 @@ public class Game extends Applet implements Runnable, WindowListener, KeyListene
 	@Override
 	public void mousePressed(MouseEvent evt) {
 		mouseDown = true;
+		mouseActuallyDown = true;
+		mouseReleasedTooSoon = true;
 		rightButton = evt.getButton()==MouseEvent.BUTTON3;
 	}
 	@Override
 	public void mouseReleased(MouseEvent evt) {
-		mouseDown = false;
+		if(!mouseReleasedTooSoon) {
+			mouseDown = false;
+		}
+		mouseActuallyDown = false;
 	}
 	public boolean mouseInsideOf(int x, int y, int width, int height) {
 		x -= screen.getScrollX();
