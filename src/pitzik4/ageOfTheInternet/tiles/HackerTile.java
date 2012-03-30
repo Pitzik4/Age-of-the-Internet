@@ -163,6 +163,7 @@ public class HackerTile extends Tile {
 		if(yoursLeft < TRIES_TO_HACK) {
 			initiatedUnhacking = true;
 			sprite = new Sprite(44, x, y, false);
+			beingUnhacked = false;
 			riCliMenuOptions = new String[1];
 			riCliMenuOptions[0] = "Hack";
 			((Level) owner.currentLevel).unhack(this);

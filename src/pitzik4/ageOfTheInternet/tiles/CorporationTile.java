@@ -147,6 +147,7 @@ public class CorporationTile extends Tile {
 			sprite = new Sprite(39, x, y, false);
 			riCliMenuOptions = new String[1];
 			riCliMenuOptions[0] = "Hack";
+			beingUnhacked = false;
 			((Level) owner.currentLevel).unhack(this);
 		}
 	}
